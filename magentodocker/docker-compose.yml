@@ -1,0 +1,52 @@
+version: "2"
+
+services:
+    php:
+        container_name: magento_stack_php
+        build:
+            dockerfile: Dockerfile
+            context: ./php
+        links:
+            - mariadb
+            - redis
+        volumes:
+            - "..:/code:delegated"
+            - "./php/local.xml:/code/http/app/etc/local.xml"
+            - "./php/n98-magerun.phar:/code/n98-magerun.phar"
+        #command: mount -t overlay -o lowerdir=/code-src,upperdir=/var/local-code,workdir=/var/workdir none /code
+        #mount -t aufs -o br=/var/local-code:/code-src none /code/
+    mariadb:
+        container_name: magento_stack_db
+        build:
+            dockerfile: Dockerfile
+            context: ./db
+        environment:
+            - "MYSQL_ROOT_PASSWORD=rootpassword"
+            - "MYSQL_DATABASE=magentodb"
+            - "MYSQL_USER=magento"
+            - "MYSQL_PASSWORD=magento"
+        volumes:
+            - "./db/mariadb:/var/lib/mysql:delegated"
+            - "./db/import:/docker-entrypoint-initdb.d:delegated"
+        #command: mysql -u magento -pmagento magentodb < /tmp/update.sql
+        ports:
+            - "3306:3306"
+    redis:
+        container_name: magento_stack_web
+        image: redis:latest
+    web:
+        container_name: magento_stack_web
+        image: nginx:latest
+        ports:
+            - "80:80"
+        links:
+            - php
+        volumes:
+            - "..:/code:delegated"
+            - "./web/nginx/nginx.conf:/etc/nginx/nginx.conf"
+            - "./web/nginx/fastcgi_params:/etc/nginx/fastcgi_params"
+            - "./web/nginx/conf_m1/:/etc/nginx/conf_m1/"
+            - "./web/nginx/sites-available/:/etc/nginx/sites-available/"
+            - "./web/nginx/sites-enabled/:/etc/nginx/sites-enabled/"
+        depends_on:
+            - php

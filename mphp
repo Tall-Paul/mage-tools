@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker exec magento_stack_php php /code/http/$1

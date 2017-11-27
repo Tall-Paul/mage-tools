@@ -1,0 +1,63 @@
+{
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "wikimedia/composer-merge-plugin": "dev-master",
+    "colinmollenhour/modman": "*",
+    "theseer/autoload" : "~1.14",
+    "php": ">=7.0.0",
+    "aydin-hassan/magento-core-composer-installer": "^1.0",
+    "magento-hackathon/magento-composer-installer": "3.1.0",
+    "Tall-Paul/magento-community": "1.9.3.6",
+    "n98/magerun": "*",
+    "jamescowie/composer-patcher": "dev-master",
+    "inchoo/php7": "1.0.6"
+  },
+  "repositories": [
+     {
+        "type":"composer",
+        "url":"https://packages.firegento.com"
+    },
+    {"type": "vcs", "url": "git@github.com:Inchoo/Inchoo_PHP7.git"},
+    {"type": "vcs", "url": "git@github.com:tall-paul/magento-community.git"},
+    {"type": "vcs", "url": "git@github.com:jamescowie/composer-patcher.git"},
+    {"type": "vcs", "url": "git@github.com:colinmollenhour/php-redis-session-abstract"}
+  ],
+  "extra": {
+      "merge-plugin": {
+          "include": [
+              "../composer.json"
+          ],
+          "recurse": false,
+          "replace": true,
+          "ignore-duplicates": false,
+          "merge-dev": true,
+          "merge-extra": true,
+          "merge-extra-deep": false,
+          "merge-scripts": true
+      },
+      "magento-root-dir": "../http",
+    "auto-append-gitignore": true,
+    "magento-deploystrategy": "copy",
+    "magento-force": true
+  },
+  "config": {
+    "bin-dir": "bin",
+    "discard-changes": true,
+    "vendor-dir": "vendor/composer",
+    "secure-http":false
+  },
+  "scripts" : {
+    "command": [
+      "./tools/composer/create-directory.sh"
+    ],
+    "post-install-cmd": [
+      "./tools/composer/install-files.sh",
+      "Inviqa\\Command::patch"
+    ],
+    "post-update-cmd": [
+      "./tools/composer/install-files.sh",
+      "Inviqa\\Command::patch"
+    ]
+  }
+}
