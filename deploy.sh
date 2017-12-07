@@ -42,10 +42,20 @@ else
 
 fi
 
+
+
+
+
+
 cd $startfolder
 echo
 
-echo "Enter server to deploy to: [dev,staging,production,none]"
+
+echo "Enter server to deploy to: "
+find "../configs" -mindepth 1 -maxdepth 1 -type d -print0 | while read -d '' -r file; do
+  echo $file
+done
+echo ">"
 read config
 
 if [ ! -f ./configs/$config/include.sh ]; then
