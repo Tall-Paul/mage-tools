@@ -32,7 +32,7 @@ services:
         ports:
             - "3306:3306"
     redis:
-        container_name: magento_stack_web
+        container_name: magento_stack_redis
         image: redis:latest
     web:
         container_name: magento_stack_web
