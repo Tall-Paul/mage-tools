@@ -1,4 +1,4 @@
-FROM php:7-fpm-jessie
+FROM php:5.6-fpm-jessie
 
 RUN apt-get update && apt-get install -y \
     libfreetype6 \

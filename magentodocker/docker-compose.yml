@@ -28,6 +28,7 @@ services:
         volumes:
             - "./db/mariadb:/var/lib/mysql:delegated"
             - "./db/import:/docker-entrypoint-initdb.d:delegated"
+            - "./db/my.cnf:/etc/mysql/my.cnf"
         #command: mysql -u magento -pmagento magentodb < /tmp/update.sql
         ports:
             - "3306:3306"

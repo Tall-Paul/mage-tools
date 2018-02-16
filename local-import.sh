@@ -4,6 +4,16 @@ SRCROOT="$PWD/src"
 TARGETROOT="$PWD/base/magento-mirror"
 declare -i count=0
 
+function check_patched(){
+  cat $SRCROOT/app/etc/applied.patches.list | grep "patching file $1" &> /dev/null
+  if [ $? == 0 ]; then
+     rm $2
+     echo "file $1 is patched but unmodified :)"
+  else
+     echo "file $1 has been modified in your source!"
+  fi
+}
+
 function recursive_check(){
   if [ $count -gt 5 ]; then
     exit 0
@@ -42,8 +52,9 @@ function recursive_check(){
       if cmp $SOURCE $TARGET >/dev/null 2>&1; then
         #files are the same, remove it
         rm $SOURCE
+        echo "file $BREADCRUMB$file is unmodified :)"
       else
-        echo "file $BREADCRUMB$file has been modified in your source!"
+        check_patched $BREADCRUMB$file $SOURCE
       fi
     fi
   done
