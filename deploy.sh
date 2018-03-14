@@ -42,20 +42,10 @@ else
 
 fi
 
-
-
-
-
-
 cd $startfolder
 echo
 
-
-echo "Enter server to deploy to: "
-find "../configs" -mindepth 1 -maxdepth 1 -type d -print0 | while read -d '' -r file; do
-  echo $file
-done
-echo ">"
+echo "Enter server to deploy to: [dev,staging,production,none]"
 read config
 
 if [ ! -f ./configs/$config/include.sh ]; then
@@ -85,7 +75,6 @@ then
   ssh $host "ln -sfn $root/static/media/ $root/releases/$release/http/"
   ssh $host "ln -sfn $root/static/feeds/ $root/releases/$release/http/"
   ssh $host "ln -sfn $root/static/sitemap/ $root/releases/$release/http/"
-  ssh $host "ln -sfn $root/static/delivery.json $root/releases/$release/http/"
   ssh $host "sudo chown -R $user:$group $root/releases/$release"
   read -p "Make web symlink? " -n 1 -r
   if [[ $REPLY =~ ^[Yy]$ ]]

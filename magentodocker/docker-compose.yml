@@ -2,7 +2,7 @@ version: "2"
 
 services:
     php:
-        container_name: magento_stack_php
+        container_name: fu_stack_php
         build:
             dockerfile: Dockerfile
             context: ./php
@@ -16,7 +16,7 @@ services:
         #command: mount -t overlay -o lowerdir=/code-src,upperdir=/var/local-code,workdir=/var/workdir none /code
         #mount -t aufs -o br=/var/local-code:/code-src none /code/
     mariadb:
-        container_name: magento_stack_db
+        container_name: fu_stack_db
         build:
             dockerfile: Dockerfile
             context: ./db
@@ -25,18 +25,19 @@ services:
             - "MYSQL_DATABASE=magentodb"
             - "MYSQL_USER=magento"
             - "MYSQL_PASSWORD=magento"
+            - "MYSQL_ROOT_HOST=%"
         volumes:
             - "./db/mariadb:/var/lib/mysql:delegated"
             - "./db/import:/docker-entrypoint-initdb.d:delegated"
-            - "./db/my.cnf:/etc/mysql/my.cnf"
+            - "./db/conf.d:/etc/mysql/conf.d"
         #command: mysql -u magento -pmagento magentodb < /tmp/update.sql
         ports:
             - "3306:3306"
     redis:
-        container_name: magento_stack_redis
+        container_name: fu_stack_redis
         image: redis:latest
     web:
-        container_name: magento_stack_web
+        container_name: fu_stack_web
         image: nginx:latest
         ports:
             - "80:80"

@@ -52,7 +52,7 @@ function recursive_check(){
       if cmp $SOURCE $TARGET >/dev/null 2>&1; then
         #files are the same, remove it
         rm $SOURCE
-        echo "file $BREADCRUMB$file is unmodified :)"
+        #echo "file $BREADCRUMB$file is unmodified :)"
       else
         check_patched $BREADCRUMB$file $SOURCE
       fi

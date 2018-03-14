@@ -4,14 +4,11 @@
 mv composer.json composer-merge.json
 mv magentocomposer/composer.json magentocomposer/composer-merge.json
 
-./bin/jq -s '[.[] | to_entries] | flatten | reduce .[] as $dot ({}; .[$dot.key] += $dot.value)' ./composer-merge.json ./magentocomposer/composer-merge.json > ./magentocomposer/composer.json
-
-if [ -f ./composer.lock ]; then
-  cp ./composer.lock magentocomposer/composer.lock
-fi
+./bin/jq -s '[.[] | to_entries] | flatten | reduce .[] as $dot ({}; .[$dot.key] += $dot.value)' ./magentocomposer/composer-merge.json ./composer-merge.json  > ./magentocomposer/composer.json
 
 sudo mv http http-old
 sudo rm -rf http-old
+mkdir -p http
 
 #sudo mv magentocomposer/vendor magentocomposer/vendor-old
 #sudo rm -rf magentocomposer/vendor-old
@@ -25,10 +22,14 @@ read -p "Are you sure? " -n 1 -r
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
+  rm -rfv vendor
+  rm -rfv bin
+  rm composer.lock
   composer update
 fi
 
-composer install --prefer-dist
+composer install
+
 cd ..
 cd http
 sudo rm -rfv media
@@ -42,5 +43,3 @@ mv magentocomposer/vendor/composer/ http/
 
 mv composer-merge.json composer.json
 mv magentocomposer/composer-merge.json magentocomposer/composer.json
-
-cp magentocomposer/composer.lock .

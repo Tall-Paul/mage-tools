@@ -1,1 +1,32 @@
+{
+  "require": {
+    "aoepeople/aoe_scheduler":"1.3.0",
+    "aromicon/google-universal-analytics":"1.2.0",
+    "dotmailer/dotmailer-magento-extension":"6.3.9",
+    "fishpig/magento1-wordpress-integration":"4.3.1.6",
+    "cm/stampederesistantconfig":"master"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:magehost/Cm_StampedeResistantConfig.git"
+    }
+    {
+      "type": "vcs",
+      "url": "git@github.com:AOEpeople/Aoe_Scheduler.git"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:sreichel/magento-Aromicon-GUA.git"
+    },
+    {
+      "type": "vcs",
+      "url":"git@github.com:dotmailer/dotmailer-magento-extension.git"
+    },
+    {
+      "type": "vcs",
+      "url":"git@github.com:bentideswell/magento1-wordpress-integration.git"
+    }
 
+  ]
+}
