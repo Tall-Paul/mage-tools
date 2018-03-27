@@ -1,0 +1,7 @@
+.git
+var/log/*
+var/locks/*
+var/cache/*
+var/session
+var/report
+.sass-cache

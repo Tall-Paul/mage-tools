@@ -12,7 +12,7 @@ if [ $branch == "current" ]
 then
   deploymentfolder="$(pwd)"
   #unlink media folder so we don't copy it!
-  rm -f ./http/media
+  rm -rf ./http/media
 else
   rebuild=1
   deploymentfolder=$startfolder/deployment/$branch/website/
@@ -68,13 +68,14 @@ then
   ssh $host "cd $root/releases && ls -t | tail -n +3 | xargs sudo rm -rf"
   ssh $host "mkdir $root/releases/$release"
   echo "Copying files, might take a while..."
-  rsync -avzLq http $host:$root/releases/$release
+  rsync -azLv --exclude-from 'excludelist.txt' http $host:$root/releases/$release
   echo "Making links...."
   ssh $host "ln -sfn $root/config/local.xml $root/releases/$release/http/app/etc/local.xml"
   #ssh $host "cd $root/releases/$release/http && find $root/static/ -maxdepth 1 -mindepth 1 | xargs ln -sfn"
   ssh $host "ln -sfn $root/static/media/ $root/releases/$release/http/"
   ssh $host "ln -sfn $root/static/feeds/ $root/releases/$release/http/"
   ssh $host "ln -sfn $root/static/sitemap/ $root/releases/$release/http/"
+  ssh $host "ln -sfn $root/static/delivery.json $root/releases/$release/http/"
   ssh $host "sudo chown -R $user:$group $root/releases/$release"
   read -p "Make web symlink? " -n 1 -r
   if [[ $REPLY =~ ^[Yy]$ ]]
@@ -96,4 +97,4 @@ then
 fi
 #relink media folder just in case we removed it
 cd $startfolder/http
-sudo ln -sf ../media/media .
+sudo ln -sf ../media .
