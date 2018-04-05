@@ -34,11 +34,12 @@ function install_files {
       for element in "${array[@]}"
       do
           FILEPATH=$FILEPATH/$element
+          LASTELEMENT=$element
           TARGET=$TARGETROOT$FILEPATH
           SRC=$DEPTH$FILEPATH
           DEPTH=../$DEPTH
           if [ -L "${TARGET}" ]; then
-            break
+            break;
           fi
           #if target is a directory, continue loop
           if [ -d "${TARGET}" ]; then
@@ -54,32 +55,42 @@ function install_files {
           #if target is a file, remove it and symlink
           if [ -f "${TARGET}" ]; then
               if [ -L "${TARGET}" ]; then
-                #it's a link, continue
                 break
               fi
-                #it's actually a file
-                #check if the target differs from the src
-                file1=`md5 $1$FILEPATH`
-                file2=`md5 $TARGET`
-                if [ "$file1" == "$file2" ]; then
-                  #files are the same, remove src
-                  printf "*"
-                  rm -f $1$FILEPATH
-                  break
-                else
-                  #different file in src, create symlink
-                  printf "|"
-                 rm -f "${TARGET}"
-                  ln -s "${SRC}" "${TARGET}"
-                  break
-               fi
+              #it's actually a file
+              #check if the target differs from the src
+              file1=`md5 $1$FILEPATH`
+              file2=`md5 $TARGET`
+              if [ "$file1" == "$file2" ]; then
+                #files are the same, remove src
+                printf "*"
+                rm -f $1$FILEPATH
+                break
+              else
+                #different file in src, create symlink
+                printf "|"
+                rm -f "${TARGET}"
+                ln -s "${SRC}" "${TARGET}"
+                break
+             fi
           fi
           #if target doesn't exist, create symlink
           if [ ! -e "${TARGET}" ]; then
-              printf "-"
-              #echo "symlinking $SRC $TARGET"
-              ln -s "${SRC}" "${TARGET}"
-              break
+              if [ $2 == 'extension' ]; then #we're installing an extension so....
+                if [ -d "${1}${FILEPATH}" ]; then #this is a directory so....
+                  printf "~"
+                  mkdir "${TARGET}"
+                  break
+                else
+                  printf ">"
+                  cp -f "${1}${FILEPATH}" "${TARGET}"
+                  break
+                fi
+              else
+                printf "-"
+                ln -s "${SRC}" "${TARGET}"
+                break
+              fi
           fi
       done
   done
@@ -91,10 +102,10 @@ if [ -e "${TARGETROOT}/installed" ]; then
 fi
 
 find "../extensions" -mindepth 2 -maxdepth 2 -type d -print0 | while read -d '' -r file; do
-    install_files $(pwd)/$file
+    install_files $(pwd)/$file extension
 done
 
-install_files $SRCROOT
+install_files $SRCROOT src
 
 touch "${TARGETROOT}/installed"
 

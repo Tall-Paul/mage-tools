@@ -31,10 +31,8 @@ else
   then
     mkdir -p deployment/$branch
     cd deployment/$branch
-    git clone -b $branch --single-branch $repo
+    git clone -b $branch --single-branch $repo ./website
     cd website
-    git submodule init
-    git submodule update
     ./rebuild.sh
     echo $branch > http/branch.txt
     cd ../../..
