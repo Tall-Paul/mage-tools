@@ -7,7 +7,8 @@
     "php": ">=5.6.0",
     "aydin-hassan/magento-core-composer-installer": "^1.0",
     "openmage/magento-lts": "1.9.3.x-dev",
-    "n98/magerun": "*"
+    "n98/magerun": "*",
+    "tallpaul/magesrc": "*"
   },
   "repositories": [
     {
@@ -25,10 +26,16 @@
     {
       "type": "vcs",
       "url": "git@github.com:colinmollenhour/php-redis-session-abstract"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:Tall-Paul/magesrc.git"
     }
   ],
   "extra": {
     "magento-root-dir": "../http",
+    "magento-src-dir": "../src",
+    "magento-extension-dir": "../extensions",
     "auto-append-gitignore": true,
     "magento-deploystrategy": "copy",
     "magento-force": true
@@ -38,10 +45,5 @@
     "discard-changes": true,
     "vendor-dir": "vendor/composer",
     "secure-http": false
-  },
-  "scripts": {
-    "post-install-cmd": [
-      "./tools/composer/install-files.sh"
-    ]
   }
 }
