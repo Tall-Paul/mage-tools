@@ -31,10 +31,13 @@
     }
   ],
   "extra": {
-      "magento-root-dir": "../http",
+    "magento-root-dir": "http",
     "auto-append-gitignore": true,
     "magento-deploystrategy": "copy",
-    "magento-force": true
+    "magento-force": true,
+    "magento-core-package-type": "magento-source",
+    "magento-src-dir": "src",
+    "magento-extension-dir": "extensions"
   },
   "config": {
     "bin-dir": "bin",
