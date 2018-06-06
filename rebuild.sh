@@ -1,8 +1,6 @@
 #!/bin/bash
 
-sudo mv http http-old
-sudo rm -rf http-old
-mkdir -p http
+rm -rf http/*
 
 #sudo mv magentocomposer/vendor magentocomposer/vendor-old
 #sudo rm -rf magentocomposer/vendor-old
@@ -25,9 +23,9 @@ composer install --no-suggest --no-dev
 
 
 cd http
-sudo rm -rf media
-sudo ln -s ../media .
-sudo mkdir var/log
-sudo chmod -R 777 var
-sudo cp ../magentodocker/php/local.xml app/etc
+rm -rf media
+ln -s ../media .
+mkdir var/log
+chmod -R 777 var
+cp ../magentodocker/php/local.xml app/etc
 cd ..
