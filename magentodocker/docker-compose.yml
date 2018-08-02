@@ -1,8 +1,7 @@
 version: "2"
-
 services:
     php:
-        container_name: fu_stack_php
+        container_name: tp_stack_php
         build:
             dockerfile: Dockerfile
             context: ./php
@@ -16,7 +15,7 @@ services:
         #command: mount -t overlay -o lowerdir=/code-src,upperdir=/var/local-code,workdir=/var/workdir none /code
         #mount -t aufs -o br=/var/local-code:/code-src none /code/
     mariadb:
-        container_name: fu_stack_db
+        container_name: tp_stack_db
         build:
             dockerfile: Dockerfile
             context: ./db
@@ -34,10 +33,10 @@ services:
         ports:
             - "3306:3306"
     redis:
-        container_name: fu_stack_redis
+        container_name: tp_stack_redis
         image: redis:latest
     web:
-        container_name: fu_stack_web
+        container_name: tp_stack_web
         image: nginx:latest
         ports:
             - "80:80"
@@ -52,3 +51,14 @@ services:
             - "./web/nginx/sites-enabled/:/etc/nginx/sites-enabled/"
         depends_on:
             - php
+    solr:
+        container_name: tp_stack_solr
+        image: harisekhon/solr:4
+        ports:
+            - "8080:8080"
+            - "8983:8983"
+        links:
+            - mariadb
+        volumes:
+            - "./solr/schema.xml:/solr/example/solr/collection1/conf/schema.xml"
+            - "./solr/solrconfig.xml:/solr/example/solr/collection1/conf/solrconfig.xml"
