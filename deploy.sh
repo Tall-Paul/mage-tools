@@ -1,4 +1,11 @@
 #!/bin/bash
+
+#set slackenabled=1 to enable slack notifications
+slackenabled=0
+webhookurl="update this with your slack url"
+slackchannel="enter a slack channel here without the leading #"
+
+
 repo=`git config --get remote.origin.url`
 startfolder="$(pwd)"
 deploymentfolder=""
@@ -66,7 +73,7 @@ then
   ssh $host "cd $root/releases && ls -t | tail -n +3 | xargs sudo rm -rf"
   ssh $host "mkdir $root/releases/$release"
   echo "Copying files, might take a while..."
-  rsync -azLv --exclude-from 'excludelist.txt' http $host:$root/releases/$release
+  rsync -azL -P  --exclude-from 'excludelist.txt' http $host:$root/releases/$release | python ./bin/rsyncbar.py
   echo "Making links...."
   ssh $host "ln -sfn $root/config/local.xml $root/releases/$release/http/app/etc/local.xml"
   #ssh $host "cd $root/releases/$release/http && find $root/static/ -maxdepth 1 -mindepth 1 | xargs ln -sfn"
@@ -93,6 +100,44 @@ then
     fi
   fi
 fi
+
+if [ $slackenabled == 1 ]
+then
+msgTitle="Deployment"
+msgBody="Deployed $branch to $config"
+#post message to slack if available
+read -d '' payLoad << EOF
+{
+        "channel": "#${slackchannel}",
+        "username": "Deployment Bot",
+        "icon_emoji": ":sunglasses:",
+        "attachments": [
+            {
+                "fallback": "${msgTitle}",
+                "color": "good",
+                "title": "${msgTitle}",
+                "fields": [{
+                    "title": "message",
+                    "value": "${msgBody}",
+                    "short": false
+                }]
+            }
+        ]
+    }
+EOF
+
+
+statusCode=$(curl \
+        --write-out %{http_code} \
+        --silent \
+        --output /dev/null \
+        -X POST \
+        -H 'Content-type: application/json' \
+        --data "${payLoad}" ${webhookurl})
+
+echo "posted to slack and got response $statusCode"
+fi
+
 #relink media folder just in case we removed it
 cd $startfolder/http
-sudo ln -sf ../media .
+ln -sf ../media .
